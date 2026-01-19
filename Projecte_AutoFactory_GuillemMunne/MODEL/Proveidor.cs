@@ -4,11 +4,18 @@ namespace AutoFactory.Model
     {
         private string cif;
         private int codi;
+        public int Codi { get { return codi; } }
         private string linia_adreca_facturacio;
         private string persona_contacte;
         private string rao_social;
         private int telf_contacte;
         private Municipi municipi;
+        public string Nom { get { return rao_social; } }
+        public Proveidor(int codi, string raoSocial)
+        {
+            this.codi = codi;
+            this.rao_social = raoSocial;
+        }
 
         public Proveidor(int codi, string cif, string raoSocial, string personaContacte, string liniaAdreca, int telefon, Municipi municipi)
         {

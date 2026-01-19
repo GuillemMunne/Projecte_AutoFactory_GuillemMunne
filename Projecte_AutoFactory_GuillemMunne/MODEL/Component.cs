@@ -4,13 +4,28 @@ using System.Linq;
 
 namespace AutoFactory.Model
 {
+    public class ComponentProveidor
+    {
+        public Component Component { get; set; }
+        public Proveidor Proveidor { get; set; }
+        public decimal Preu { get; set; }
+    }
+
     public class Component : Item
     {
         private int _codi_fabricant;
         private decimal _preu_mig;
         private UnitatMesura _unitat;
         private Dictionary<Proveidor, decimal> _proveidors;
-
+        public override string ToString()
+        {
+            return Nom;
+        }
+        public void BuidaProveidors()
+        {
+            _proveidors.Clear();
+            PreuMig = 0;
+        }
 
         public int CodiFabricant
         {
