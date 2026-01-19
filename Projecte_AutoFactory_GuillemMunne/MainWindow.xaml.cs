@@ -1,23 +1,9 @@
-﻿using ProjecteAutoFactory.Finestres;
-using ProjecteAutoFactory.Clases;
+﻿using AutoFactoryProjecte.Finestres.FinestreMainWindow;
 using ProjecteAutoFactory.Finestres.FinestreMainWindow;
 using ProjecteAutoFactory.Finestres.FinestreNormal;
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using AutoFactoryProjecte.Finestres.FinestreMainWindow;
 
 namespace ProjecteAutoFactory
 {
@@ -46,58 +32,29 @@ namespace ProjecteAutoFactory
 
             Application.Current.Resources.MergedDictionaries.Add(diccionario);
 
-            if (botonSeleccionado != null) {
+            if (botonSeleccionado != null)
+            {
                 botonSeleccionado.Style = TryFindResource("MainButtonMenuSelected") as Style;
             }
         }
 
         private void clickGestioProductes(object sender, RoutedEventArgs e)
         {
-            ContenidoBotones.Content = new GestioProductes();
-            if (!botonSeleccionado.Equals(btnGestioProductes))
-            {
-                DeseleccionarBoton();
-                 botonSeleccionado = btnGestioProductes;
-                SeleccionarBoton(btnGestioProductes);
-            }
-
+            MostrarSeccio(new GestioProductes(), btnGestioProductes);
         }
 
         private void clickComponentsPrimaris(object sender, RoutedEventArgs e)
         {
-            ContenidoBotones.Content = new GestioComponents();
-
-            if (!botonSeleccionado.Equals(btnComponentsPrimaris))
-            {
-                DeseleccionarBoton();
-                botonSeleccionado = btnComponentsPrimaris;
-                SeleccionarBoton(btnComponentsPrimaris);
-            }
+            MostrarSeccio(new GestioComponents(), btnComponentsPrimaris);
         }
 
         private void clickProveidors(object sender, RoutedEventArgs e)
         {
-            ContenidoBotones.Content = new Proveidors();
-
-            if (!botonSeleccionado.Equals(btnProveidors))
-            {
-                DeseleccionarBoton();
-                botonSeleccionado = btnProveidors;
-                SeleccionarBoton(btnProveidors);
-            }
-
+            MostrarSeccio(new Proveidors(), btnProveidors);
         }
         private void clickFinestraAjuda(object sender, RoutedEventArgs e)
         {
-            ContenidoBotones.Content = new Ajuda();
-
-            if (!botonSeleccionado.Equals(btnFinestraAjuda))
-            {
-                DeseleccionarBoton();
-                botonSeleccionado = btnFinestraAjuda;
-                SeleccionarBoton(btnFinestraAjuda);
-            }
-
+            MostrarSeccio(new Ajuda(), btnFinestraAjuda);
         }
 
         private void clickLogin(object sender, RoutedEventArgs e)
@@ -109,8 +66,7 @@ namespace ProjecteAutoFactory
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ContenidoBotones.Content = new GestioProductes();
-            botonSeleccionado = btnGestioProductes;
+            MostrarSeccio(new GestioProductes(), btnGestioProductes);
         }
 
         private void AccedirInforme(object sender, RoutedEventArgs e)
@@ -118,10 +74,25 @@ namespace ProjecteAutoFactory
 
         }
 
+        private void MostrarSeccio(UserControl seccio, Button boto)
+        {
+            ContenidoBotones.Content = seccio;
+
+            if (ReferenceEquals(botonSeleccionado, boto))
+            {
+                return;
+            }
+
+            DeseleccionarBoton();
+            SeleccionarBoton(boto);
+        }
+
         private void SeleccionarBoton(Button boton)
         {
             if (botonSeleccionado != null)
+            {
                 botonSeleccionado.Style = TryFindResource("MainButtonMenu") as Style;
+            }
 
             boton.Style = TryFindResource("MainButtonMenuSelected") as Style;
             botonSeleccionado = boton;
@@ -130,7 +101,9 @@ namespace ProjecteAutoFactory
         private void DeseleccionarBoton()
         {
             if (botonSeleccionado != null)
+            {
                 botonSeleccionado.Style = TryFindResource("MainButtonMenu") as Style;
+            }
             botonSeleccionado = null;
         }
 

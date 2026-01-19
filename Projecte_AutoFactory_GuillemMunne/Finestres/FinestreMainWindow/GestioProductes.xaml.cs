@@ -1,20 +1,10 @@
-﻿using ProjecteAutoFactory.Finestres;
-using ProjecteAutoFactory.Clases;
+﻿using ProjecteAutoFactory.Clases;
 using ProjecteAutoFactory.Finestres.FinestreNormal;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjecteAutoFactory.Finestres.FinestreMainWindow
 {
@@ -34,7 +24,6 @@ namespace ProjecteAutoFactory.Finestres.FinestreMainWindow
         private void ObrirAfegirProducte_Click(object sender, RoutedEventArgs e)
         {
             var finestra = new AfegirElProducte();
-            
 
             if (finestra.ShowDialog() == true)
             {
@@ -43,8 +32,6 @@ namespace ProjecteAutoFactory.Finestres.FinestreMainWindow
                 tbLlistaProductes.ItemsSource = Productes.LlistaProductes;
                 tbLlistaProductes.DisplayMemberPath = "CodiNom";
                 tbLlistaProductes.Items.Refresh();
-
-                
             }
         }
 
@@ -104,7 +91,7 @@ namespace ProjecteAutoFactory.Finestres.FinestreMainWindow
 
         private void busquedaProducte(object sender, RoutedEventArgs e)
         {
-            string textCercat = tbCercaProducte.Text.Trim().ToLower();
+            string textCercat = tbCercaProducte.Text.Trim();
 
             // Si està buit, restaurem la llista completa i sortim sense missatge
             if (string.IsNullOrEmpty(textCercat))
@@ -117,8 +104,8 @@ namespace ProjecteAutoFactory.Finestres.FinestreMainWindow
 
             foreach (var p in Productes.LlistaProductes)
             {
-                bool nomCoincide = p.Nom.ToLower().StartsWith(textCercat);
-                bool codiCoincide = p.Codi.ToString().StartsWith(textCercat);
+                bool nomCoincide = p.Nom.StartsWith(textCercat, StringComparison.OrdinalIgnoreCase);
+                bool codiCoincide = p.Codi.ToString().StartsWith(textCercat, StringComparison.OrdinalIgnoreCase);
 
                 if (nomCoincide || codiCoincide)
                 {
@@ -143,15 +130,12 @@ namespace ProjecteAutoFactory.Finestres.FinestreMainWindow
 
         private void ModificarProducte_Click(object sender, RoutedEventArgs e)
         {
-            
             Productes seleccionat = (Productes)tbLlistaProductes.SelectedItem;
             if (seleccionat != null)
             {
-
-
                 var modificarWindow = new ModificarProducte(seleccionat);
 
-            if (modificarWindow.ShowDialog() == true)
+                if (modificarWindow.ShowDialog() == true)
                 {
                     tbLlistaProductes.ItemsSource = Productes.LlistaProductes;
                     tbLlistaProductes.DisplayMemberPath = "CodiNom";
