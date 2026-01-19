@@ -1,18 +1,9 @@
 ﻿using Microsoft.Win32;
 using ProjecteAutoFactory.Clases;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProjecteAutoFactory.Finestres.FinestreNormal
 {
@@ -26,13 +17,12 @@ namespace ProjecteAutoFactory.Finestres.FinestreNormal
         public ModificarProducte()
         {
             InitializeComponent();
-            
         }
         public ModificarProducte(Productes producteSeleccionat)
         {
             InitializeComponent();
             this.producteSeleccionat = producteSeleccionat;
-            this.DataContext = producteSeleccionat;
+            DataContext = producteSeleccionat;
             txtCodi.Text = producteSeleccionat.Codi.ToString();
             txtNom.Text = producteSeleccionat.Nom;
             txtDescripcio.Text = producteSeleccionat.Descripcio;
@@ -40,43 +30,45 @@ namespace ProjecteAutoFactory.Finestres.FinestreNormal
             txtFoto.Text = producteSeleccionat.Foto;
         }
 
-      
-
         private void Acceptar_Click(object sender, RoutedEventArgs e)
         {
-            if (txtNom.Text != null && txtNom.Text != "" &&
-                txtCodi.Text != null && txtCodi.Text != "" &&
-                txtStock.Text != null && txtStock.Text != "")
-            {
-                if (int.Parse(txtCodi.Text) > 0 &&
-                    int.Parse(txtStock.Text) >= 0 && txtDescripcio.Text.Length <= 400 && txtNom.Text.Length <= 100)
-                {
-                    producteSeleccionat.Codi = int.Parse(txtCodi.Text);
-                    producteSeleccionat.Nom = txtNom.Text;
-                    producteSeleccionat.Descripcio = txtDescripcio.Text;
-                    producteSeleccionat.Stock = int.Parse(txtStock.Text);
-                    producteSeleccionat.Foto = txtFoto.Text;
-
-                    this.DialogResult = true;
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Si us plau, les dades introduides han de ser correctes.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
+            if (string.IsNullOrWhiteSpace(txtNom.Text) ||
+                string.IsNullOrWhiteSpace(txtCodi.Text) ||
+                string.IsNullOrWhiteSpace(txtStock.Text))
             {
                 MessageBox.Show("Si us plau, ompliu tots els camps correctament.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            if (!int.TryParse(txtCodi.Text, out int codi) ||
+                !int.TryParse(txtStock.Text, out int stock) ||
+                codi <= 0 ||
+                stock < 0 ||
+                txtDescripcio.Text.Length > 400 ||
+                txtNom.Text.Length > 100)
+            {
+                MessageBox.Show("Si us plau, les dades introduides han de ser correctes.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            producteSeleccionat.Codi = codi;
+            producteSeleccionat.Nom = txtNom.Text;
+            producteSeleccionat.Descripcio = txtDescripcio.Text;
+            producteSeleccionat.Stock = stock;
+            producteSeleccionat.Foto = txtFoto.Text;
+
+            DialogResult = true;
+            Close();
         }
 
 
         private void inserirImatge(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Arxius d'imatge|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
-            dlg.Title = "Selecciona una imatge";
+            OpenFileDialog dlg = new OpenFileDialog
+            {
+                Filter = "Arxius d'imatge|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                Title = "Selecciona una imatge"
+            };
 
             if (dlg.ShowDialog() == true)
             {
@@ -86,13 +78,10 @@ namespace ProjecteAutoFactory.Finestres.FinestreNormal
             }
         }
 
-
-
-
         private void Cancelar_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            DialogResult = false;
+            Close();
         }
 
         private void txtDescripcio_TextChanged(object sender, TextChangedEventArgs e)

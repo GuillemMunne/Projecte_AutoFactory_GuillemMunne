@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 namespace ProjecteAutoFactory.Clases
 {
     public class Productes
     {
         public int Codi { get; set; }
         public string Nom { get; set; }
-        public String Descripcio { get; set; }
+        public string Descripcio { get; set; }
         public int Stock { get; set; }
         public string Foto { get; set; }
         public static HashSet<Productes> LlistaProductes { get; } = new HashSet<Productes>();
@@ -14,7 +13,7 @@ namespace ProjecteAutoFactory.Clases
 
         public Productes() { }
 
-        public Productes(int codi, string nom, String descripcio, int stock, string foto)
+        public Productes(int codi, string nom, string descripcio, int stock, string foto)
         {
             Codi = codi;
             Nom = nom;
