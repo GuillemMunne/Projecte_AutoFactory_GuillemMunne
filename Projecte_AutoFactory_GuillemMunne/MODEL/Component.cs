@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace AutoFactory.Model
 {
@@ -47,7 +45,7 @@ namespace AutoFactory.Model
             set { _unitat = value; }
         }
 
-      
+
         public Component()
         {
             _proveidors = new Dictionary<Proveidor, decimal>();
@@ -83,7 +81,7 @@ namespace AutoFactory.Model
             return new ReadOnlyDictionary<Proveidor, decimal>(_proveidors);
         }
 
-      
+
 
     }
 }
