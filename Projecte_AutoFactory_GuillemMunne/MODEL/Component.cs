@@ -1,16 +1,33 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 
 namespace AutoFactory.Model
 {
+    public class ComponentProveidor
+    {
+        public Component Component { get; set; }
+        public Proveidor Proveidor { get; set; }
+        public decimal Preu { get; set; }
+    }
+
     public class Component : Item
     {
         private int _codi_fabricant;
         private decimal _preu_mig;
         private UnitatMesura _unitat;
         private Dictionary<Proveidor, decimal> _proveidors;
-
+        public override string ToString()
+        {
+            return Nom;
+        }
+        public void BuidaProveidors()
+        {
+            _proveidors.Clear();
+            PreuMig = 0;
+        }
 
         public int CodiFabricant
         {
@@ -30,7 +47,7 @@ namespace AutoFactory.Model
             set { _unitat = value; }
         }
 
-
+      
         public Component()
         {
             _proveidors = new Dictionary<Proveidor, decimal>();
@@ -66,7 +83,7 @@ namespace AutoFactory.Model
             return new ReadOnlyDictionary<Proveidor, decimal>(_proveidors);
         }
 
-
+      
 
     }
 }

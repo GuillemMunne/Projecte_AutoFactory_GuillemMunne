@@ -1,5 +1,4 @@
 
-
 using System;
 using System.Collections.Generic;
 
@@ -32,5 +31,5 @@ namespace AutoFactory.Model
         {
             return llistaUnitatsMesura;
         }
-    }
-}
+    }//end UnitatMesura
+}//end namespace AutoFactory.Model
