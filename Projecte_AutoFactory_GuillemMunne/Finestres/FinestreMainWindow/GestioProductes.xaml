@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="ProjecteAutoFactory.Finestres.FinestreMainWindow.GestioProductes"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    d:DesignHeight="450"
+    d:DesignWidth="800">
+    <Border Background="{DynamicResource FondoPrincipal}" Padding="20">
+
+        <Grid Background="{DynamicResource FondoPrincipal}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" FontFamily="Segoe UI" FontSize="22" Foreground="{DynamicResource TextoSecundario}" FontWeight="Bold">
+                Gestió de productes
+            </Label>
+
+            <Grid Grid.Row="1" Margin="0,10,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{DynamicResource TextoPrincipal}">
+                    Llista de productes
+                </Label>
+
+                <TextBox Grid.Column="1" Width="200" Height="30" HorizontalAlignment="Right" Foreground="{DynamicResource TextoPrincipal}" x:Name="tbCercaProducte" KeyDown="tbCercaProducte_KeyDown">
+                    <TextBox.Template>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border Background="{DynamicResource FondoCaja}" CornerRadius="10">
+                                <Grid>
+                                    <Image Source="/src/Imatges/lupa.png" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                                    <ScrollViewer x:Name="PART_ContentHost" Margin="25,0,15,0" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal" Foreground="{DynamicResource TextoPrincipal}"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </TextBox.Template>
+                </TextBox>
+            </Grid>
+
+            <Grid Grid.Row="2" Margin="0,10,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+
+                <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,10,0">
+                    <ListBox x:Name="tbLlistaProductes" Background="{DynamicResource FondoCaja}" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal" Foreground="{DynamicResource TextoPrincipal}" SelectionMode="Single" SelectionChanged="tbLlistaProductes_SelectionChanged"/>
+                </ScrollViewer>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="111" Margin="0,0,0,10">
+                        <Label x:Name="tbDetallProducte" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal" Foreground="{DynamicResource TextoPrincipal}" Background="{DynamicResource FondoCaja}" Content="Selecciona un producte per veure la descripció."/>
+                    </ScrollViewer>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <TreeView x:Name="tbArbreDomProductes" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal" Foreground="{DynamicResource TextoPrincipal}" Background="{DynamicResource FondoCaja}">
+                            <TreeViewItem Header="Arbre DOM del producte"/>
+                        </TreeView>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,10,0">
+                    <Button Click="ObrirAfegirProducte_Click" Content="Afegir producte" Width="110" Height="30" Style="{StaticResource EstilBotoGeneral}"/>
+                    <Button Click="ModificarProducte_Click" Content="Modificar producte" Width="110" Height="30" Style="{StaticResource EstilBotoGeneral}" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Click="AccedirInforme" Content="Accedir a l'informe" Width="150" Height="30" Style="{StaticResource EstilBotoGeneral}"/>
+                    <Button Click="EliminarProducte" Content="Eliminar Producte" Width="110" Height="30" Style="{StaticResource EstilBotoCancelar}" Margin="10,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

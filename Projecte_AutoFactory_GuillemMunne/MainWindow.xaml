@@ -1,0 +1,31 @@
+﻿<Window x:Class="ProjecteAutoFactory.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:ProjecteAutoFactory" mc:Ignorable="d" Loaded="Window_Loaded" Title="MainWindow" Height="500" Width="1000" Icon="/src/Imatges/logo.png">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Style="{DynamicResource MainBorderGeneral}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="/src/Imatges/logo.png" Width="200" Height="Auto" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Label Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{DynamicResource MainLabelGeneral}">MENU</Label>
+                <Button x:Name="btnGestioProductes" Click="clickGestioProductes" Grid.Row="2" Padding="12" Style="{DynamicResource MainButtonMenuSelected}">Gestió Productes</Button>
+                <Button x:Name="btnComponentsPrimaris" Click="clickComponentsPrimaris" Grid.Row="3" Padding="12" Style="{DynamicResource MainButtonMenu}">Gestió Components</Button>
+                <Button x:Name="btnProveidors" Click="clickProveidors" Grid.Row="4" Padding="12" Style="{DynamicResource MainButtonMenu}">Proveïdors</Button>
+                <Button x:Name="btnFinestraAjuda" Click="clickFinestraAjuda" Grid.Row="5" Padding="12" Style="{DynamicResource MainButtonMenu}">Ajuda</Button>
+                <Button x:Name="btnLogin" Click="clickLogin" Grid.Row="6" Padding="12" Style="{DynamicResource MainButtonMenu}">Login</Button>
+                <Button Grid.Row="7" Padding="12" Style="{DynamicResource MainButtonMenuSelected}" Click="BtnCambiarTema_Click">Cambiar Tema</Button>
+            </Grid>
+        </Border>
+        <ContentControl x:Name="ContenidoBotones" Grid.Column="1"/>
+    </Grid>
+</Window>

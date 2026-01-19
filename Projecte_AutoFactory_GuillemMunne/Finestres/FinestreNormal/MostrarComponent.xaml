@@ -1,0 +1,56 @@
+﻿<Window x:Class="AutoFactoryProjecte.Finestres.FinestreNormal.MostrarComponent"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mostrar Component"
+        Height="450" Width="800"
+        Background="{DynamicResource FondoPrincipal}"
+        Foreground="{DynamicResource TextoPrincipal}">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Nom:" Style="{DynamicResource EstilLabelGeneral}" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtNom" Style="{DynamicResource EstilTextBlockGeneral}"/>
+        <Label Grid.Row="0" Grid.Column="2" Content="Codi:" Style="{DynamicResource EstilLabelGeneral}" HorizontalAlignment="Right" Margin="10,0,5,0"/>
+        <TextBlock Grid.Row="0" Grid.Column="3" x:Name="txtCodi" Style="{DynamicResource EstilTextBlockGeneral}"/>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Estoc:" Style="{DynamicResource EstilLabelGeneral}" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtStock" Style="{DynamicResource EstilTextBlockGeneral}"/>
+        <Label Grid.Row="1" Grid.Column="2" Content="Preu Mig:" Style="{DynamicResource EstilLabelGeneral}" HorizontalAlignment="Right" Margin="10,0,5,0"/>
+        <TextBlock Grid.Row="1" Grid.Column="3" x:Name="txtPreuMig" Style="{DynamicResource EstilTextBlockGeneral}"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Descripció:" Style="{DynamicResource EstilLabelGeneral}" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+        <ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource ScrollViewerEstil}">
+            <TextBlock x:Name="txtDescripcio" Style="{DynamicResource EstilTextBlockGeneral}" TextWrapping="Wrap"/>
+        </ScrollViewer>
+
+        <Label Grid.Row="2" Grid.Column="2" Content="Proveidors:" Style="{DynamicResource EstilLabelGeneral}" HorizontalAlignment="Right" Margin="10,0,5,0"/>
+        <ListBox Grid.Row="2" Grid.Column="3" x:Name="lstConte" Style="{DynamicResource EstilListBoxGeneral}" SelectionChanged="lstConte_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                        <TextBlock Text="{Binding Nom}" Width="200"/>
+                        <TextBlock Text="{Binding Preu, StringFormat=' - {0:C}'}" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Style="{DynamicResource MainBorderGeneral}" Height="150">
+            <Image x:Name="imgProducte" Stretch="Uniform"/>
+        </Border>
+    </Grid>
+</Window>

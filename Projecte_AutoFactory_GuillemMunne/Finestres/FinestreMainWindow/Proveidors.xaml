@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="ProjecteAutoFactory.Finestres.FinestreMainWindow.Proveidors"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="{DynamicResource FondoPrincipal}">
+        <Border Padding="30,10" Background="{DynamicResource FondoPrincipal}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{DynamicResource TextoPrincipal}">
+                    Llista de proveïdors
+                </Label>
+
+                <TextBox Grid.Row="1" Grid.Column="0" Width="230" Height="30" HorizontalAlignment="Left" Margin="0,5,0,5"
+                         Foreground="{DynamicResource TextoPrincipal}" Background="{DynamicResource FondoCaja}" x:Name="tbCercaProveidor">
+                    <TextBox.Template>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                <Grid>
+                                    <Image Source="/src/Imatges/lupa.png" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                                    <ScrollViewer x:Name="PART_ContentHost" Margin="25,0,15,0" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </TextBox.Template>
+                </TextBox>
+
+                <ListBox Grid.Row="2" Grid.Column="0" x:Name="lbProveidors" SelectionChanged="lbProveidors_SelectionChanged" 
+                         Style="{DynamicResource EstilListBoxGeneral}" SelectionMode="Single" Margin="0,5,0,0"/>
+
+                <Label Grid.Row="0" Grid.Column="2" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{DynamicResource TextoPrincipal}">
+                    Components del proveïdor
+                </Label>
+
+                <TextBox Grid.Row="1" Grid.Column="2" Width="230" Height="30" HorizontalAlignment="Left" Margin="0,5,0,5"
+                         Foreground="{DynamicResource TextoPrincipal}" Background="{DynamicResource FondoCaja}" x:Name="tbCercaComponentProveidor">
+                    <TextBox.Template>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                <Grid>
+                                    <Image Source="/src/Imatges/lupa.png" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                                    <ScrollViewer x:Name="PART_ContentHost" Margin="25,0,15,0" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </TextBox.Template>
+                </TextBox>
+
+                <ListBox Grid.Row="2" Grid.Column="2" x:Name="lbProductesProveidor" Style="{DynamicResource EstilListBoxGeneral}" SelectionMode="Single" Margin="0,5,0,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

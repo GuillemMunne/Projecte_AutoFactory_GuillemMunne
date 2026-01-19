@@ -1,0 +1,173 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Colors principals -->
+    <SolidColorBrush x:Key="FondoPrincipal" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="FondoCaja" Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="FondoLateral" Color="#D3D3D3"/>
+    <SolidColorBrush x:Key="TextoPrincipal" Color="#333333"/>
+    <SolidColorBrush x:Key="TextoSecundario" Color="#666666"/>
+    <SolidColorBrush x:Key="BotonFondo" Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="BotonCancelarFondo" Color="#CC0000"/>
+    <SolidColorBrush x:Key="TextoBoton" Color="White"/>
+    <SolidColorBrush x:Key="TextPrincipalBotons" Color="#333333"/>
+
+    <!-- Colors MainWindow -->
+    <SolidColorBrush x:Key="MainFonsLateral" Color="#D3D3D3"/>
+    <SolidColorBrush x:Key="MainFonsBoton" Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="MainFonsBotonCancelar" Color="#CC0000"/>
+    <SolidColorBrush x:Key="MainTextBoton" Color="#333333"/>
+    <SolidColorBrush x:Key="MainTextLabel" Color="#333333" />
+    <SolidColorBrush x:Key="MainTextBoxFons" Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="MainTextBoxText" Color="#333333"/>
+
+    <!--Colors MostrarProductes-->
+    <SolidColorBrush x:Key="ScrollFons" Color="#EDEDED"/>
+    <SolidColorBrush x:Key="ScrollBord" Color="#CCCCCC"/>
+
+
+
+    <!-- Login -->
+    <SolidColorBrush x:Key="LoginStackPanelFons" Color="#F8F8F8"/>
+    <SolidColorBrush x:Key="LoginLabelText" Color="#333333"/>
+    <SolidColorBrush x:Key="LoginTextBoxFons" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="LoginTextBoxText" Color="#333333"/>
+    <SolidColorBrush x:Key="LoginButtonFons" Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="LoginButtonText" Color="#333333"/>
+    <SolidColorBrush x:Key="LoginInputBackground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="LoginWelcomeForeground" Color="#800000"/>
+
+    <Style x:Key="LoginLabelGeneral" TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource LoginLabelText}"/>
+        <Setter Property="FontSize" Value="17"/>
+    </Style>
+
+    <Style x:Key="LoginTextBoxGeneral" TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource LoginTextBoxFons}"/>
+        <Setter Property="Foreground" Value="{StaticResource LoginTextBoxText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FondoLateral}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+    <Style x:Key="LoginPasswordBoxGeneral" TargetType="PasswordBox">
+        <Setter Property="Background" Value="{StaticResource LoginTextBoxFons}"/>
+        <Setter Property="Foreground" Value="{StaticResource LoginTextBoxText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FondoLateral}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+    <Style x:Key="LoginButtonGeneral" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource LoginButtonFons}"/>
+        <Setter Property="Foreground" Value="{StaticResource LoginButtonText}"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+
+
+
+    <!-- Estils generals -->
+
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Background" Value="{DynamicResource FondoCaja}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextoPrincipal}"/>
+        <Setter Property="Padding" Value="4"/>
+    </Style>
+
+    <Style x:Key="ScrollViewerEstil" TargetType="ScrollViewer">
+        <Setter Property="Background" Value="{StaticResource ScrollFons}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ScrollBord}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        
+    </Style>
+
+
+    <Style x:Key="EstilFinestraGeneral" TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource FondoPrincipal}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextoPrincipal}"/>
+    </Style>
+
+    <Style x:Key="EstilLabelGeneral" TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource TextoPrincipal}"/>
+    </Style>
+
+    <Style x:Key="EstilBotoGeneral" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource BotonFondo}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrincipalBotons}"/>
+    </Style>
+
+    <Style x:Key="EstilBotoCancelar" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource BotonCancelarFondo}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextoBoton}"/>
+    </Style>
+
+    <Style x:Key="EstilListBoxGeneral" TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource FondoCaja}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextoPrincipal}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FondoLateral}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+
+    <!-- Estilo ComboBox -->
+    <Style x:Key="EstilComboBoxGeneral" TargetType="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource MainTextBoxFons}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MainTextBoxText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FondoLateral}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+    <!-- Estilo TextBox -->
+    <Style x:Key="EstilTextBoxGeneral" TargetType="TextBox">
+        <Setter Property="Background" Value="{DynamicResource MainTextBoxFons}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MainTextBoxText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FondoLateral}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+    <!-- Estilo TextBlock -->
+    <Style x:Key="EstilTextBlockGeneral" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource MainTextBoxText}"/>
+    </Style>
+
+    <!-- Estils MainWindow -->
+    <Style TargetType="Button" x:Key="MainBotonGeneral">
+        <Setter Property="Background" Value="{DynamicResource MainFonsBoton}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MainTextBoton}"/>
+    </Style>
+
+    <Style TargetType="Button" x:Key="MainBotonCancelar">
+        <Setter Property="Background" Value="{DynamicResource MainFonsBotonCancelar}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextoBoton}"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="MainLabelGeneral">
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Foreground" Value="{DynamicResource MainTextLabel}"/>
+    </Style>
+
+    <Style TargetType="Border" x:Key="MainBorderGeneral">
+        <Setter Property="Background" Value="{DynamicResource MainFonsLateral}"/>
+    </Style>
+
+    <Style TargetType="Button" x:Key="MainButtonMenu">
+        <Setter Property="Background" Value="{DynamicResource MainFonsBotonCancelar}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextoBoton}"/>
+    </Style>
+
+    <Style TargetType="Button" x:Key="MainButtonMenuSelected">
+        <Setter Property="Background" Value="{DynamicResource BotonFondo}"/>
+        <Setter Property="Foreground" Value="{DynamicResource LoginLabelText}"/>
+    </Style>
+</ResourceDictionary>
