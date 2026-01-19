@@ -5,10 +5,11 @@ using AutoFactory.DAO.Oracle;
 using AutoFactory.IDAO;
 using AutoFactory.Model;
 using Oracle.ManagedDataAccess.Client;
+using OracleDatabase = AutoFactory.DAO.Oracle.OracleDatabase;
 
 namespace AutoFactory.DAO
 {
-    public sealed class ComponentDao : IComponentDao
+    public sealed class DAOComponent : IDAOComponent
     {
         private const string SelectAllSql = @"
             SELECT c.CODI,
@@ -24,101 +25,136 @@ namespace AutoFactory.DAO
             LEFT JOIN UNITAT_MESURA u ON u.CODI = c.UNITAT_CODI
             ORDER BY c.CODI";
 
-        private const string SelectByIdSql = @"
-            SELECT c.CODI,
-                   c.NOM,
-                   c.DESCRIPCIO,
-                   c.STOCK,
-                   c.FOTO,
-                   c.CODI_FABRICANT,
-                   c.PREU_MIG,
-                   u.CODI AS UNITAT_CODI,
-                   u.NOM AS UNITAT_NOM
-            FROM COMPONENT c
-            LEFT JOIN UNITAT_MESURA u ON u.CODI = c.UNITAT_CODI
-            WHERE c.CODI = :codi";
-
         private const string InsertSql = @"
             INSERT INTO COMPONENT (CODI, NOM, DESCRIPCIO, STOCK, FOTO, CODI_FABRICANT, PREU_MIG, UNITAT_CODI)
             VALUES (:codi, :nom, :descripcio, :stock, :foto, :codi_fabricant, :preu_mig, :unitat_codi)";
 
-        private const string UpdateSql = @"
-            UPDATE COMPONENT
-            SET NOM = :nom,
-                DESCRIPCIO = :descripcio,
-                STOCK = :stock,
-                FOTO = :foto,
-                CODI_FABRICANT = :codi_fabricant,
-                PREU_MIG = :preu_mig,
-                UNITAT_CODI = :unitat_codi
-            WHERE CODI = :codi";
+        private const string DeleteAllSql = @"DELETE FROM COMPONENT";
 
-        private const string DeleteSql = @"
-            DELETE FROM COMPONENT
-            WHERE CODI = :codi";
+        private const string SelectProveidorsComponentSql = @"
+            SELECT cp.CODI_COMPONENT,
+                   cp.CODI_PROVEIDOR,
+                   cp.PREU
+            FROM COMPONENT_PROVEIDOR cp
+            WHERE cp.CODI_COMPONENT = :codi";
 
         private readonly OracleDatabase _database;
 
-        public ComponentDao(OracleDatabase database)
+        
+        private List<Component> _components = new();
+
+        public DAOComponent(OracleDatabase database)
         {
             _database = database ?? throw new ArgumentNullException(nameof(database));
         }
 
+        
+        public List<Component> CarregarComponents()
+        {
+            _components = _database.ExecuteQuery(SelectAllSql, MapComponent).ToList();
+            return _components;
+        }
+
         public IReadOnlyList<Component> ObtenirTots()
         {
-            return _database.ExecuteQuery(SelectAllSql, MapComponent);
+            return _components;
         }
 
-        public Component? ObtenirPerCodi(int codi)
+        public Component? ObtenirComponent(int codi)
         {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            return _database.ExecuteQuery(SelectByIdSql, MapComponent, parameters).FirstOrDefault();
+            return _components.FirstOrDefault(c => c.Codi == codi);
         }
 
-        public void Afegir(Component component)
+     
+        public void AfegirComponent(Component component)
+        {
+            if (component == null) throw new ArgumentNullException(nameof(component));
+            _components.Add(component);
+        }
+
+        public void ModificarComponent(Component component)
         {
             if (component == null) throw new ArgumentNullException(nameof(component));
 
+            var existent = _components.FirstOrDefault(c => c.Codi == component.Codi);
+            if (existent == null) return;
+
+            existent.Nom = component.Nom;
+            existent.Descripcio = component.Descripcio;
+            existent.Stock = component.Stock;
+            existent.Foto = component.Foto;
+            existent.CodiFabricant = component.CodiFabricant;
+            existent.PreuMig = component.PreuMig;
+            existent.Unitat = component.Unitat;
+        }
+
+        public void EliminarComponent(int codi)
+        {
+            var component = _components.FirstOrDefault(c => c.Codi == codi);
+            if (component != null)
+            {
+                _components.Remove(component);
+            }
+        }
+
+       
+        public void ValidarCanvis()
+        {
+            
+            _database.ExecuteNonQuery(DeleteAllSql);
+
+            
+            foreach (var component in _components)
+            {
+                var parameters = new[]
+                {
+                    new OracleParameter("codi", component.Codi),
+                    new OracleParameter("nom", component.Nom),
+                    new OracleParameter("descripcio", component.Descripcio),
+                    new OracleParameter("stock", component.Stock),
+                    new OracleParameter("foto", component.Foto ?? Array.Empty<byte>()),
+                    new OracleParameter("codi_fabricant", component.CodiFabricant),
+                    new OracleParameter("preu_mig", component.PreuMig),
+                    new OracleParameter("unitat_codi", component.Unitat?.GetCodi() ?? (object)DBNull.Value)
+                };
+
+                _database.ExecuteNonQuery(InsertSql, parameters);
+            }
+        }
+
+        public void DesferCanvis()
+        {
+            CarregarComponents();
+        }
+
+        public void TancarCapa()
+        {
+            _components.Clear();
+        }
+
+       
+        public List<ComponentProveidor> ObtenirProveidorsComponent(int codiComponent)
+        {
             var parameters = new[]
             {
-                new OracleParameter("codi", component.Codi),
-                new OracleParameter("nom", component.Nom),
-                new OracleParameter("descripcio", component.Descripcio),
-                new OracleParameter("stock", component.Stock),
-                new OracleParameter("foto", component.Foto ?? Array.Empty<byte>()),
-                new OracleParameter("codi_fabricant", component.CodiFabricant),
-                new OracleParameter("preu_mig", component.PreuMig),
-                new OracleParameter("unitat_codi", component.Unitat?.GetCodi() ?? (object)DBNull.Value)
+                new OracleParameter("codi", codiComponent)
             };
 
-            _database.ExecuteNonQuery(InsertSql, parameters);
+            return _database.ExecuteQuery(
+                SelectProveidorsComponentSql,
+                reader => new ComponentProveidor
+                {
+                    CodiComponent = reader.GetInt32(reader.GetOrdinal("CODI_COMPONENT")),
+                    CodiProveidor = reader.GetInt32(reader.GetOrdinal("CODI_PROVEIDOR")),
+                    Preu = reader.GetDecimal(reader.GetOrdinal("PREU"))
+                },
+                parameters
+            ).ToList();
         }
 
-        public void Actualitzar(Component component)
-        {
-            if (component == null) throw new ArgumentNullException(nameof(component));
-
-            var parameters = new[]
-            {
-                new OracleParameter("nom", component.Nom),
-                new OracleParameter("descripcio", component.Descripcio),
-                new OracleParameter("stock", component.Stock),
-                new OracleParameter("foto", component.Foto ?? Array.Empty<byte>()),
-                new OracleParameter("codi_fabricant", component.CodiFabricant),
-                new OracleParameter("preu_mig", component.PreuMig),
-                new OracleParameter("unitat_codi", component.Unitat?.GetCodi() ?? (object)DBNull.Value),
-                new OracleParameter("codi", component.Codi)
-            };
-
-            _database.ExecuteNonQuery(UpdateSql, parameters);
-        }
-
-        public void Eliminar(int codi)
-        {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            _database.ExecuteNonQuery(DeleteSql, parameters);
-        }
-
+        // ===============================
+        // MAPPERS
+        // ===============================
         private static Component MapComponent(OracleDataReader reader)
         {
             var component = new Component

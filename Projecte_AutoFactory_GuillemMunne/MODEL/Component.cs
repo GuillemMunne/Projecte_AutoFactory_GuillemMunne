@@ -4,12 +4,7 @@ using System.Linq;
 
 namespace AutoFactory.Model
 {
-    public class ComponentProveidor
-    {
-        public Component Component { get; set; }
-        public Proveidor Proveidor { get; set; }
-        public decimal Preu { get; set; }
-    }
+    
 
     public class Component : Item
     {

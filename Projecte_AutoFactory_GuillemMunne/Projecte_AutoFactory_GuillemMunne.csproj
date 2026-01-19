@@ -22,4 +22,8 @@
     <Folder Include="IDao\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="23.26.0" />
+  </ItemGroup>
+
 </Project>

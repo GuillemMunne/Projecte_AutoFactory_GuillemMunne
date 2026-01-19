@@ -5,82 +5,93 @@ using AutoFactory.DAO.Oracle;
 using AutoFactory.IDAO;
 using AutoFactory.Model;
 using Oracle.ManagedDataAccess.Client;
+using OracleDatabase = AutoFactory.DAO.Oracle.OracleDatabase;
 
 namespace AutoFactory.DAO
 {
-    public sealed class ProvinciaDao : IProvinciaDao
+    public sealed class ProvinciaDao : IDAOProvincia
     {
         private const string SelectAllSql = @"
             SELECT CODI, NOM
             FROM PROVINCIA
             ORDER BY CODI";
 
-        private const string SelectByIdSql = @"
-            SELECT CODI, NOM
-            FROM PROVINCIA
-            WHERE CODI = :codi";
-
         private const string InsertSql = @"
             INSERT INTO PROVINCIA (CODI, NOM)
             VALUES (:codi, :nom)";
 
-        private const string UpdateSql = @"
-            UPDATE PROVINCIA
-            SET NOM = :nom
-            WHERE CODI = :codi";
-
-        private const string DeleteSql = @"
-            DELETE FROM PROVINCIA
-            WHERE CODI = :codi";
+        private const string DeleteAllSql = @"DELETE FROM PROVINCIA";
 
         private readonly OracleDatabase _database;
+        private List<Provincia> _provincies = new();
 
         public ProvinciaDao(OracleDatabase database)
         {
             _database = database ?? throw new ArgumentNullException(nameof(database));
         }
 
-        public IReadOnlyList<Provincia> ObtenirTots()
+        public List<Provincia> CarregarProvincia()
         {
-            return _database.ExecuteQuery(SelectAllSql, MapProvincia);
+            _provincies = _database.ExecuteQuery(SelectAllSql, MapProvincia).ToList();
+            return _provincies;
         }
 
-        public Provincia? ObtenirPerCodi(int codi)
+        public IReadOnlyList<Provincia> ObtenirTots()
         {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            return _database.ExecuteQuery(SelectByIdSql, MapProvincia, parameters).FirstOrDefault();
+            return _provincies;
+        }
+
+        public Provincia ObtenirProvincia(int codi)
+        {
+            return _provincies.FirstOrDefault(p => p.Codi == codi);
         }
 
         public void Afegir(Provincia provincia)
         {
             if (provincia == null) throw new ArgumentNullException(nameof(provincia));
-
-            var parameters = new[]
-            {
-                new OracleParameter("codi", provincia.Codi),
-                new OracleParameter("nom", provincia.Nom)
-            };
-
-            _database.ExecuteNonQuery(InsertSql, parameters);
+            _provincies.Add(provincia);
         }
 
         public void Actualitzar(Provincia provincia)
         {
             if (provincia == null) throw new ArgumentNullException(nameof(provincia));
 
-            var parameters = new[]
-            {
-                new OracleParameter("nom", provincia.Nom),
-                new OracleParameter("codi", provincia.Codi)
-            };
+            int index = _provincies.FindIndex(p => p.Codi == provincia.Codi);
+            if (index < 0) return;
 
-            _database.ExecuteNonQuery(UpdateSql, parameters);
+            _provincies[index] = provincia;
         }
 
         public void Eliminar(int codi)
         {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            _database.ExecuteNonQuery(DeleteSql, parameters);
+            var provincia = _provincies.FirstOrDefault(p => p.Codi == codi);
+            if (provincia != null) _provincies.Remove(provincia);
+        }
+
+        public void ValidarCanvis()
+        {
+            _database.ExecuteNonQuery(DeleteAllSql);
+
+            foreach (var provincia in _provincies)
+            {
+                var parameters = new[]
+                {
+                    new OracleParameter("codi", provincia.Codi),
+                    new OracleParameter("nom", provincia.Nom)
+                };
+
+                _database.ExecuteNonQuery(InsertSql, parameters);
+            }
+        }
+
+        public void DesferCanvis()
+        {
+            CarregarProvincia();
+        }
+
+        public void TancarCapa()
+        {
+            _provincies.Clear();
         }
 
         private static Provincia MapProvincia(OracleDataReader reader)

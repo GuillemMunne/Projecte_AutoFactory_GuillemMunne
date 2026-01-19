@@ -5,10 +5,11 @@ using AutoFactory.DAO.Oracle;
 using AutoFactory.IDAO;
 using AutoFactory.Model;
 using Oracle.ManagedDataAccess.Client;
+using OracleDatabase = AutoFactory.DAO.Oracle.OracleDatabase;
 
 namespace AutoFactory.DAO
 {
-    public sealed class ProveidorDao : IProveidorDao
+    public sealed class ProveidorDao : IDAOProveidor
     {
         private const string SelectAllSql = @"
             SELECT p.CODI,
@@ -26,98 +27,88 @@ namespace AutoFactory.DAO
             INNER JOIN PROVINCIA pr ON pr.CODI = m.PROVINCIA_CODI
             ORDER BY p.CODI";
 
-        private const string SelectByIdSql = @"
-            SELECT p.CODI,
-                   p.CIF,
-                   p.RAO_SOCIAL,
-                   p.PERSONA_CONTACTE,
-                   p.LINIA_ADRECA_FACTURACIO,
-                   p.TELEFON,
-                   m.CODI AS MUNICIPI_CODI,
-                   m.NOM AS MUNICIPI_NOM,
-                   pr.CODI AS PROVINCIA_CODI,
-                   pr.NOM AS PROVINCIA_NOM
-            FROM PROVEIDOR p
-            INNER JOIN MUNICIPI m ON m.CODI = p.MUNICIPI_CODI
-            INNER JOIN PROVINCIA pr ON pr.CODI = m.PROVINCIA_CODI
-            WHERE p.CODI = :codi";
-
         private const string InsertSql = @"
             INSERT INTO PROVEIDOR (CODI, CIF, RAO_SOCIAL, PERSONA_CONTACTE, LINIA_ADRECA_FACTURACIO, TELEFON, MUNICIPI_CODI)
             VALUES (:codi, :cif, :rao_social, :persona_contacte, :linia_adreca_facturacio, :telefon, :municipi_codi)";
 
-        private const string UpdateSql = @"
-            UPDATE PROVEIDOR
-            SET CIF = :cif,
-                RAO_SOCIAL = :rao_social,
-                PERSONA_CONTACTE = :persona_contacte,
-                LINIA_ADRECA_FACTURACIO = :linia_adreca_facturacio,
-                TELEFON = :telefon,
-                MUNICIPI_CODI = :municipi_codi
-            WHERE CODI = :codi";
-
-        private const string DeleteSql = @"
-            DELETE FROM PROVEIDOR
-            WHERE CODI = :codi";
+        private const string DeleteAllSql = @"DELETE FROM PROVEIDOR";
 
         private readonly OracleDatabase _database;
+
+        private List<Proveidor> _proveidors = new();
 
         public ProveidorDao(OracleDatabase database)
         {
             _database = database ?? throw new ArgumentNullException(nameof(database));
         }
 
-        public IReadOnlyList<Proveidor> ObtenirTots()
+        public List<Proveidor> CarregarProveidors()
         {
-            return _database.ExecuteQuery(SelectAllSql, MapProveidor);
+            _proveidors = _database.ExecuteQuery(SelectAllSql, MapProveidor).ToList();
+            return _proveidors;
         }
 
-        public Proveidor? ObtenirPerCodi(int codi)
+        public IReadOnlyList<Proveidor> ObtenirTots()
         {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            return _database.ExecuteQuery(SelectByIdSql, MapProveidor, parameters).FirstOrDefault();
+            return _proveidors;
+        }
+
+        public Proveidor ObtenirProveidor(int codi)
+        {
+            return _proveidors.FirstOrDefault(p => p.GetCodi() == codi);
         }
 
         public void Afegir(Proveidor proveidor)
         {
             if (proveidor == null) throw new ArgumentNullException(nameof(proveidor));
-
-            var parameters = new[]
-            {
-                new OracleParameter("codi", proveidor.GetCodi()),
-                new OracleParameter("cif", proveidor.GetCif()),
-                new OracleParameter("rao_social", proveidor.GetRS()),
-                new OracleParameter("persona_contacte", proveidor.GetPersonaContacte()),
-                new OracleParameter("linia_adreca_facturacio", proveidor.GetLAF()),
-                new OracleParameter("telefon", proveidor.GetTelefonContacte()),
-                new OracleParameter("municipi_codi", proveidor.GetMunicipi().CodiMunicipi)
-            };
-
-            _database.ExecuteNonQuery(InsertSql, parameters);
+            _proveidors.Add(proveidor);
         }
 
         public void Actualitzar(Proveidor proveidor)
         {
             if (proveidor == null) throw new ArgumentNullException(nameof(proveidor));
 
-            var parameters = new[]
-            {
-                new OracleParameter("cif", proveidor.GetCif()),
-                new OracleParameter("rao_social", proveidor.GetRS()),
-                new OracleParameter("persona_contacte", proveidor.GetPersonaContacte()),
-                new OracleParameter("linia_adreca_facturacio", proveidor.GetLAF()),
-                new OracleParameter("telefon", proveidor.GetTelefonContacte()),
-                new OracleParameter("municipi_codi", proveidor.GetMunicipi().CodiMunicipi),
-                new OracleParameter("codi", proveidor.GetCodi())
-            };
+            int index = _proveidors.FindIndex(p => p.GetCodi() == proveidor.GetCodi());
+            if (index < 0) return;
 
-            _database.ExecuteNonQuery(UpdateSql, parameters);
+            _proveidors[index] = proveidor;
         }
 
         public void Eliminar(int codi)
         {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            _database.ExecuteNonQuery(DeleteSql, parameters);
+            var proveidor = _proveidors.FirstOrDefault(p => p.GetCodi() == codi);
+            if (proveidor != null) _proveidors.Remove(proveidor);
+        }
+
+        public void ValidarCanvis()
+        {
+            _database.ExecuteNonQuery(DeleteAllSql);
+
+            foreach (var proveidor in _proveidors)
+            {
+                var parameters = new[]
+                {
+                    new OracleParameter("codi", proveidor.GetCodi()),
+                    new OracleParameter("cif", proveidor.GetCif()),
+                    new OracleParameter("rao_social", proveidor.GetRS()),
+                    new OracleParameter("persona_contacte", proveidor.GetPersonaContacte()),
+                    new OracleParameter("linia_adreca_facturacio", proveidor.GetLAF()),
+                    new OracleParameter("telefon", proveidor.GetTelefonContacte()),
+                    new OracleParameter("municipi_codi", proveidor.GetMunicipi().CodiMunicipi)
+                };
+
+                _database.ExecuteNonQuery(InsertSql, parameters);
+            }
+        }
+
+        public void DesferCanvis()
+        {
+            CarregarProveidors();
+        }
+
+        public void TancarCapa()
+        {
+            _proveidors.Clear();
         }
 
         private static Proveidor MapProveidor(OracleDataReader reader)

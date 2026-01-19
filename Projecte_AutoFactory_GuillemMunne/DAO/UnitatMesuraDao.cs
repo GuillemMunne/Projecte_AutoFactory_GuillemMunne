@@ -5,82 +5,93 @@ using AutoFactory.DAO.Oracle;
 using AutoFactory.IDAO;
 using AutoFactory.Model;
 using Oracle.ManagedDataAccess.Client;
+using OracleDatabase = AutoFactory.DAO.Oracle.OracleDatabase;
 
 namespace AutoFactory.DAO
 {
-    public sealed class UnitatMesuraDao : IUnitatMesuraDao
+    public sealed class UnitatMesuraDao : IDAOUnitatMesura
     {
         private const string SelectAllSql = @"
             SELECT CODI, NOM
             FROM UNITAT_MESURA
             ORDER BY CODI";
 
-        private const string SelectByIdSql = @"
-            SELECT CODI, NOM
-            FROM UNITAT_MESURA
-            WHERE CODI = :codi";
-
         private const string InsertSql = @"
             INSERT INTO UNITAT_MESURA (CODI, NOM)
             VALUES (:codi, :nom)";
 
-        private const string UpdateSql = @"
-            UPDATE UNITAT_MESURA
-            SET NOM = :nom
-            WHERE CODI = :codi";
-
-        private const string DeleteSql = @"
-            DELETE FROM UNITAT_MESURA
-            WHERE CODI = :codi";
+        private const string DeleteAllSql = @"DELETE FROM UNITAT_MESURA";
 
         private readonly OracleDatabase _database;
+        private List<UnitatMesura> _unitats = new();
 
         public UnitatMesuraDao(OracleDatabase database)
         {
             _database = database ?? throw new ArgumentNullException(nameof(database));
         }
 
-        public IReadOnlyList<UnitatMesura> ObtenirTots()
+        public List<UnitatMesura> CarregarUnitatsMesura()
         {
-            return _database.ExecuteQuery(SelectAllSql, MapUnitatMesura);
+            _unitats = _database.ExecuteQuery(SelectAllSql, MapUnitatMesura).ToList();
+            return _unitats;
         }
 
-        public UnitatMesura? ObtenirPerCodi(int codi)
+        public IReadOnlyList<UnitatMesura> ObtenirTots()
         {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            return _database.ExecuteQuery(SelectByIdSql, MapUnitatMesura, parameters).FirstOrDefault();
+            return _unitats;
+        }
+
+        public UnitatMesura ObtenirUnitatMesura(int codi)
+        {
+            return _unitats.FirstOrDefault(u => u.GetCodi() == codi);
         }
 
         public void Afegir(UnitatMesura unitatMesura)
         {
             if (unitatMesura == null) throw new ArgumentNullException(nameof(unitatMesura));
-
-            var parameters = new[]
-            {
-                new OracleParameter("codi", unitatMesura.GetCodi()),
-                new OracleParameter("nom", unitatMesura.GetNom())
-            };
-
-            _database.ExecuteNonQuery(InsertSql, parameters);
+            _unitats.Add(unitatMesura);
         }
 
         public void Actualitzar(UnitatMesura unitatMesura)
         {
             if (unitatMesura == null) throw new ArgumentNullException(nameof(unitatMesura));
 
-            var parameters = new[]
-            {
-                new OracleParameter("nom", unitatMesura.GetNom()),
-                new OracleParameter("codi", unitatMesura.GetCodi())
-            };
+            int index = _unitats.FindIndex(u => u.GetCodi() == unitatMesura.GetCodi());
+            if (index < 0) return;
 
-            _database.ExecuteNonQuery(UpdateSql, parameters);
+            _unitats[index] = unitatMesura;
         }
 
         public void Eliminar(int codi)
         {
-            var parameters = new[] { new OracleParameter("codi", codi) };
-            _database.ExecuteNonQuery(DeleteSql, parameters);
+            var unitat = _unitats.FirstOrDefault(u => u.GetCodi() == codi);
+            if (unitat != null) _unitats.Remove(unitat);
+        }
+
+        public void ValidarCanvis()
+        {
+            _database.ExecuteNonQuery(DeleteAllSql);
+
+            foreach (var unitat in _unitats)
+            {
+                var parameters = new[]
+                {
+                    new OracleParameter("codi", unitat.GetCodi()),
+                    new OracleParameter("nom", unitat.GetNom())
+                };
+
+                _database.ExecuteNonQuery(InsertSql, parameters);
+            }
+        }
+
+        public void DesferCanvis()
+        {
+            CarregarUnitatsMesura();
+        }
+
+        public void TancarCapa()
+        {
+            _unitats.Clear();
         }
 
         private static UnitatMesura MapUnitatMesura(OracleDataReader reader)
